@@ -41,4 +41,41 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    /**
+     * A user may be assigned many roles.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
+
+    /**
+     * Assign a new role to the user.
+     *
+     * @param  mixed  $role
+     */
+    public function assignRole($role)
+    {
+        if (is_string($role)) {
+            $role = Role::whereName($role)->firstOrFail();
+        }
+
+        $this->roles()->sync($role, false);
+    }
+
+    /**
+     * Fetch the user's permissions.
+     *
+     * @return array
+     */
+    public function permissions()
+    {
+        return $this->roles
+            ->map->permissions
+            ->flatten()->pluck('name')->unique();
+    }
 }

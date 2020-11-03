@@ -17,11 +17,11 @@ class Role extends Model
     protected $guarded = [];
 
     /**
-     * A role may have many abilities.
+     * A role may have many permissions.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function abilities()
+    public function permissions()
     {
         return $this->belongsToMany(Permission::class)->withTimestamps();
     }
